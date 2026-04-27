@@ -1,0 +1,153 @@
+"use strict";
+/**
+ * ============================================================================
+ * FACTORY METHOD PATTERN - STEP 1: The Product Interface
+ * ============================================================================
+ *
+ * 🎯 KEY INSIGHT: The Factory Method pattern is built around an INTERFACE
+ * (or abstract class) that defines what the created objects can do.
+ *
+ * Think of it like a power outlet on the wall:
+ * - The outlet doesn't care WHAT device you plug in
+ * - It only cares that the plug FITS the interface (shape, voltage)
+ * - Any device that conforms to the outlet's interface can be used
+ *
+ * In the Factory Method pattern:
+ * - "Product" = the interface that all creatable objects must implement
+ * - "Concrete Product" = a specific implementation of that interface
+ * - "Creator" = the class that declares the factory method
+ * - "Concrete Creator" = the class that overrides the factory method
+ *
+ * ============================================================================
+ * PATTERN STRUCTURE (from GoF book):
+ * ============================================================================
+ *
+ *     ┌─────────────────┐         ┌──────────────────┐
+ *     │    Creator       │         │    Product        │
+ *     ├─────────────────┤         ├──────────────────┤
+ *     │ +factoryMethod()│────────>│ +usefulAction()  │
+ *     │ +someOperation()│         └──────────────────┘
+ *     └────────┬────────┘                 ▲
+ *              │                           │
+ *     ┌────────┴────────┐         ┌──────┴───────────┐
+ *     │ConcreteCreator  │         │ConcreteProduct   │
+ *     ├─────────────────┤         ├──────────────────┤
+ *     │ +factoryMethod()│────────>│ +usefulAction()  │
+ *     └─────────────────┘         └──────────────────┘
+ *
+ * ============================================================================
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AirplaneTransport = exports.ShipTransport = exports.TruckTransport = void 0;
+/**
+ * ============================================================================
+ * CONCRETE PRODUCTS - Specific implementations of the Product interface
+ * ============================================================================
+ *
+ * Each Concrete Product is a REAL object that the factory can create.
+ * The key point: the Creator doesn't need to know about these classes.
+ * It only knows about the Transport interface.
+ *
+ * 💡 OPEN/CLOSED PRINCIPLE in action:
+ * - You can add new Transport types WITHOUT modifying existing code
+ * - Just create a new class implementing Transport
+ * - Create a new Creator subclass that returns the new Transport
+ * - Existing code continues to work unchanged
+ * ============================================================================
+ */
+/**
+ * Concrete Product A: Truck Transport
+ *
+ * 🚛 Real-world analogy: A logistics company that uses trucks for road delivery.
+ * - Slower than air but cheaper
+ * - Can carry heavy loads
+ * - Available almost everywhere
+ */
+class TruckTransport {
+    deliver() {
+        return "🚛 Delivering by road in a large truck. Package will travel via highway network.";
+    }
+    estimatedDeliveryTime() {
+        return 48; // 48 hours for road delivery
+    }
+    costPerKg() {
+        return 2.5; // $2.50 per kg
+    }
+}
+exports.TruckTransport = TruckTransport;
+/**
+ * Concrete Product B: Ship Transport
+ *
+ * 🚢 Real-world analogy: Maritime shipping for international cargo.
+ * - Slowest but cheapest for large quantities
+ * - Limited to port cities
+ * - Essential for intercontinental trade
+ */
+class ShipTransport {
+    deliver() {
+        return "🚢 Delivering by sea in a massive cargo ship. Package will cross oceans.";
+    }
+    estimatedDeliveryTime() {
+        return 168; // 7 days for sea delivery
+    }
+    costPerKg() {
+        return 0.8; // $0.80 per kg - cheapest for bulk
+    }
+}
+exports.ShipTransport = ShipTransport;
+/**
+ * Concrete Product C: Airplane Transport
+ *
+ * ✈️ Real-world analogy: Air freight for urgent deliveries.
+ * - Fastest but most expensive
+ * - Weight limitations
+ * - Best for time-sensitive or high-value goods
+ */
+class AirplaneTransport {
+    deliver() {
+        return "✈️ Delivering by air in a cargo plane. Package will fly to destination.";
+    }
+    estimatedDeliveryTime() {
+        return 6; // 6 hours for air delivery
+    }
+    costPerKg() {
+        return 15.0; // $15.00 per kg - most expensive
+    }
+}
+exports.AirplaneTransport = AirplaneTransport;
+/**
+ * ============================================================================
+ * 🧠 DEEP UNDERSTANDING: Why not just use `new` directly?
+ * ============================================================================
+ *
+ * WITHOUT Factory Method:
+ * ```
+ * // Client code is TIGHTLY COUPLED to concrete classes
+ * const transport = new TruckTransport();  // Hard-coded dependency!
+ * transport.deliver();
+ * ```
+ *
+ * Problems with direct `new`:
+ * 1. Client is COUPLED to a specific class (TruckTransport)
+ * 2. Changing the transport type requires modifying client code
+ * 3. Can't swap implementations at runtime
+ * 4. Can't easily mock for testing
+ * 5. Violates Open/Closed Principle (must modify code to extend)
+ *
+ * WITH Factory Method:
+ * ```
+ * // Client code depends only on the Creator abstraction
+ * const creator: LogisticsCreator = new RoadLogistics();
+ * const transport = creator.createTransport(); // Decoupled!
+ * transport.deliver();
+ * ```
+ *
+ * Benefits:
+ * 1. Client depends only on abstractions (Transport, LogisticsCreator)
+ * 2. Can swap implementations by using a different Creator subclass
+ * 3. Can choose implementation at runtime
+ * 4. Easy to mock for testing
+ * 5. Follows Open/Closed Principle (extend by adding new classes)
+ * ============================================================================
+ */ 
+//# sourceMappingURL=product.interface.js.map
